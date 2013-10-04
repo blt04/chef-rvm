@@ -73,7 +73,11 @@ class Chef
         install_command = "curl -L #{opts[:installer_url]} | bash #{opts[:script_flags]}"
         install_user = opts[:user] || "root"
 
-        log "Performing RVM install with [#{install_command}] (as #{install_user})"
+        log "Performing RVM install with [#{install_command}] (as #{install_user})" do
+          unless install_now
+            not_if rvm_installed_check, :environment => exec_env
+          end
+        end
 
         i = execute exec_name do
           user    install_user
